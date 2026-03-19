@@ -1,0 +1,1078 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://example.org/ontology-schema.json",
+  "definitions": {
+    "iri": {
+      "type": "string",
+      "pattern": "^[a-zA-Z][a-zA-Z0-9+\\-.]*:.*$"
+    },
+    "langString": {
+      "type": "object",
+      "properties": {
+        "value": { "type": "string" },
+        "language": { "type": "string", "pattern": "^[a-z]{2}(-[A-Z]{2})?$" }
+      },
+      "required": ["value"]
+    },
+    "typedLiteral": {
+      "type": "object",
+      "properties": {
+        "value": { "type": ["string", "number", "boolean"] },
+        "datatype": { "$ref": "#/definitions/iri" }
+      },
+      "required": ["value", "datatype"]
+    }
+  },
+  "type": "object",
+  "required": ["ontology"],
+  "properties": {
+    "@context": {
+      "type": "object",
+      "description": "JSON-LD context for semantic interoperability",
+      "additionalProperties": {
+        "type": ["string", "object"]
+      }
+    },
+    "@id": { "$ref": "#/definitions/iri" },
+    "@type": { "const": "owl:Ontology" },
+
+    "ontology": {
+      "type": "object",
+      "properties": {
+        "metadata": {
+          "type": "object",
+          "description": "Ontology metadata following Dublin Core and OWL standards",
+          "properties": {
+            "@id": { "$ref": "#/definitions/iri" },
+            "uri": { "$ref": "#/definitions/iri" },
+            "title": {
+              "oneOf": [
+                { "type": "string" },
+                { "$ref": "#/definitions/langString" },
+                {
+                  "type": "array",
+                  "items": { "$ref": "#/definitions/langString" }
+                }
+              ]
+            },
+            "description": {
+              "oneOf": [
+                { "type": "string" },
+                { "$ref": "#/definitions/langString" },
+                {
+                  "type": "array",
+                  "items": { "$ref": "#/definitions/langString" }
+                }
+              ]
+            },
+            "versionInfo": {
+              "type": "object",
+              "properties": {
+                "number": { "type": "string" },
+                "date": { "type": "string", "format": "date-time" },
+                "previousVersion": { "$ref": "#/definitions/iri" },
+                "incompatibleWith": {
+                  "type": "array",
+                  "items": { "$ref": "#/definitions/iri" }
+                }
+              }
+            },
+            "creator": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "@id": { "$ref": "#/definitions/iri" },
+                  "name": { "type": "string" },
+                  "orcid": { "type": "string" },
+                  "affiliation": { "type": "string" }
+                }
+              }
+            },
+            "license": {
+              "type": "object",
+              "properties": {
+                "@id": { "$ref": "#/definitions/iri" },
+                "name": { "type": "string" },
+                "type": {
+                  "type": "string",
+                  "enum": ["CC-BY", "CC-BY-SA", "CC-BY-NC", "MIT", "Apache-2.0", "GPL-3.0", "Custom"]
+                }
+              }
+            },
+            "namespaces": {
+              "type": "object",
+              "description": "Prefix to namespace URI mappings",
+              "patternProperties": {
+                "^[a-zA-Z][a-zA-Z0-9]*$": { "$ref": "#/definitions/iri" }
+              }
+            },
+            "imports": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "@id": { "$ref": "#/definitions/iri" },
+                  "prefix": { "type": "string" },
+                  "version": { "type": "string" }
+                }
+              }
+            },
+            "statistics": {
+              "type": "object",
+              "properties": {
+                "classes": { "type": "integer", "minimum": 0 },
+                "objectProperties": { "type": "integer", "minimum": 0 },
+                "datatypeProperties": { "type": "integer", "minimum": 0 },
+                "annotationProperties": { "type": "integer", "minimum": 0 },
+                "individuals": { "type": "integer", "minimum": 0 },
+                "axioms": { "type": "integer", "minimum": 0 },
+                "logicalAxioms": { "type": "integer", "minimum": 0 }
+              }
+            },
+            "annotations": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "property": { "$ref": "#/definitions/iri" },
+                  "value": {
+                    "oneOf": [
+                      { "type": "string" },
+                      { "$ref": "#/definitions/langString" },
+                      { "$ref": "#/definitions/typedLiteral" },
+                      { "type": "array", "items": {} }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+
+        "classHierarchy": {
+          "type": "object",
+          "description": "Hierarchical organization of classes with multiple inheritance",
+          "patternProperties": {
+            "^[a-zA-Z_][a-zA-Z0-9_:/.#-]*$": {
+              "type": "object",
+              "properties": {
+                "@id": { "$ref": "#/definitions/iri" },
+                "name": {
+                  "oneOf": [
+                    { "type": "string" },
+                    { "$ref": "#/definitions/langString" },
+                    {
+                      "type": "array",
+                      "items": { "$ref": "#/definitions/langString" }
+                    }
+                  ]
+                },
+                "type": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "enum": [
+                      "owl:Class",
+                      "owl:Restriction",
+                      "owl:UnionOf",
+                      "owl:IntersectionOf",
+                      "owl:ComplementOf",
+                      "owl:EnumeratedClass"
+                    ]
+                  }
+                },
+                "subClassOf": {
+                  "type": "array",
+                  "items": {
+                    "oneOf": [
+                      { "type": "string" },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "some",
+                              "only",
+                              "value",
+                              "min",
+                              "max",
+                              "exactly",
+                              "union",
+                              "intersection",
+                              "complement"
+                            ]
+                          },
+                          "onProperty": { "type": "string" },
+                          "hasValue": {},
+                          "someValuesFrom": { "type": "string" },
+                          "allValuesFrom": { "type": "string" },
+                          "cardinality": { "type": "integer" },
+                          "minCardinality": { "type": "integer" },
+                          "maxCardinality": { "type": "integer" },
+                          "classes": {
+                            "type": "array",
+                            "items": { "type": "string" }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                "equivalentClass": {
+                  "type": "array",
+                  "items": {
+                    "oneOf": [
+                      { "type": "string" },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "type": { "enum": ["union", "intersection"] },
+                          "classes": {
+                            "type": "array",
+                            "items": { "type": "string" }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                },
+                "disjointWith": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
+                "disjointUnionOf": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
+                "hasKey": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "properties": {
+                        "type": "array",
+                        "items": { "type": "string" }
+                      }
+                    }
+                  }
+                },
+                "enumeratedMembers": {
+                  "type": "array",
+                  "description": "For enumerated classes (owl:oneOf)",
+                  "items": { "type": "string" }
+                },
+                "annotations": {
+                  "$ref": "#/properties/ontology/properties/metadata/properties/annotations"
+                }
+              }
+            }
+          }
+        },
+
+        "properties": {
+          "type": "object",
+          "description": "All property types with their characteristics",
+          "patternProperties": {
+            "^[a-zA-Z_][a-zA-Z0-9_:/.#-]*$": {
+              "type": "object",
+              "oneOf": [
+                { "$ref": "#/definitions/objectProperty" },
+                { "$ref": "#/definitions/datatypeProperty" },
+                { "$ref": "#/definitions/annotationProperty" }
+              ]
+            }
+          }
+        },
+
+        "definitions": {
+          "objectProperty": {
+            "properties": {
+              "@id": { "$ref": "#/definitions/iri" },
+              "name": {
+                "oneOf": [
+                  { "type": "string" },
+                  { "$ref": "#/definitions/langString" }
+                ]
+              },
+              "type": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "owl:ObjectProperty",
+                    "owl:TransitiveProperty",
+                    "owl:SymmetricProperty",
+                    "owl:AsymmetricProperty",
+                    "owl:ReflexiveProperty",
+                    "owl:IrreflexiveProperty",
+                    "owl:FunctionalProperty",
+                    "owl:InverseFunctionalProperty"
+                  ]
+                }
+              },
+              "domain": {
+                "type": "array",
+                "items": {
+                  "oneOf": [
+                    { "type": "string" },
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": { "enum": ["union", "intersection"] },
+                        "classes": {
+                          "type": "array",
+                          "items": { "type": "string" }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              "range": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "subPropertyOf": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "equivalentProperty": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "inverseOf": { "type": "string" },
+              "propertyChainAxiom": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "characteristics": {
+                "type": "object",
+                "properties": {
+                  "functional": { "type": "boolean" },
+                  "inverseFunctional": { "type": "boolean" },
+                  "transitive": { "type": "boolean" },
+                  "symmetric": { "type": "boolean" },
+                  "asymmetric": { "type": "boolean" },
+                  "reflexive": { "type": "boolean" },
+                  "irreflexive": { "type": "boolean" }
+                }
+              },
+              "annotations": {
+                "$ref": "#/properties/ontology/properties/metadata/properties/annotations"
+              }
+            }
+          },
+          "datatypeProperty": {
+            "properties": {
+              "@id": { "$ref": "#/definitions/iri" },
+              "name": {
+                "oneOf": [
+                  { "type": "string" },
+                  { "$ref": "#/definitions/langString" }
+                ]
+              },
+              "type": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "owl:DatatypeProperty",
+                    "owl:FunctionalProperty"
+                  ]
+                }
+              },
+              "domain": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "range": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "xsd:string",
+                    "xsd:integer",
+                    "xsd:decimal",
+                    "xsd:boolean",
+                    "xsd:dateTime",
+                    "xsd:date",
+                    "xsd:time",
+                    "xsd:float",
+                    "xsd:double",
+                    "rdf:langString"
+                  ]
+                }
+              },
+              "subPropertyOf": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "equivalentProperty": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "constraints": {
+                "type": "object",
+                "properties": {
+                  "minLength": { "type": "integer" },
+                  "maxLength": { "type": "integer" },
+                  "pattern": { "type": "string" },
+                  "minInclusive": { "type": "number" },
+                  "maxInclusive": { "type": "number" },
+                  "minExclusive": { "type": "number" },
+                  "maxExclusive": { "type": "number" },
+                  "totalDigits": { "type": "integer" },
+                  "fractionDigits": { "type": "integer" },
+                  "inLanguage": { "type": "string" }
+                }
+              },
+              "annotations": {
+                "$ref": "#/properties/ontology/properties/metadata/properties/annotations"
+              }
+            }
+          },
+          "annotationProperty": {
+            "properties": {
+              "@id": { "$ref": "#/definitions/iri" },
+              "name": {
+                "oneOf": [
+                  { "type": "string" },
+                  { "$ref": "#/definitions/langString" }
+                ]
+              },
+              "type": {
+                "type": "array",
+                "items": { "const": "owl:AnnotationProperty" }
+              },
+              "subPropertyOf": {
+                "type": "array",
+                "items": { "type": "string" }
+              },
+              "annotations": {
+                "$ref": "#/properties/ontology/properties/metadata/properties/annotations"
+              }
+            }
+          }
+        },
+
+        "individuals": {
+          "type": "object",
+          "description": "Named individuals/instances",
+          "patternProperties": {
+            "^[a-zA-Z_][a-zA-Z0-9_:/.#-]*$": {
+              "type": "object",
+              "properties": {
+                "@id": { "$ref": "#/definitions/iri" },
+                "name": {
+                  "oneOf": [
+                    { "type": "string" },
+                    { "$ref": "#/definitions/langString" }
+                  ]
+                },
+                "type": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
+                "sameAs": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
+                "differentFrom": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
+                "facts": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "property": { "type": "string" },
+                      "value": {
+                        "oneOf": [
+                          { "type": "string" },
+                          { "type": "number" },
+                          { "type": "boolean" },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "@id": { "type": "string" }
+                            }
+                          },
+                          {
+                            "type": "object",
+                            "properties": {
+                              "@value": { "type": ["string", "number", "boolean"] },
+                              "@type": { "type": "string" },
+                              "@language": { "type": "string" }
+                            }
+                          }
+                        ]
+                      },
+                      "annotation": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "property": { "type": "string" },
+                            "value": {}
+                          }
+                        }
+                      }
+                    },
+                    "required": ["property", "value"]
+                  }
+                },
+                "annotations": {
+                  "$ref": "#/properties/ontology/properties/metadata/properties/annotations"
+                }
+              }
+            }
+          }
+        },
+
+        "rules": {
+          "type": "object",
+          "description": "SWRL and other rule types",
+          "patternProperties": {
+            "^[a-zA-Z_][a-zA-Z0-9_]*$": {
+              "type": "object",
+              "properties": {
+                "@id": { "type": "string" },
+                "name": {
+                  "oneOf": [
+                    { "type": "string" },
+                    { "$ref": "#/definitions/langString" }
+                  ]
+                },
+                "type": {
+                  "type": "string",
+                  "enum": ["swrl", "dl", "custom"]
+                },
+                "antecedent": {
+                  "type": "object",
+                  "properties": {
+                    "type": { "enum": ["and", "or", "not"] },
+                    "atoms": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": [
+                              "class",
+                              "property",
+                              "sameAs",
+                              "differentFrom",
+                              "builtin"
+                            ]
+                          },
+                          "subject": {
+                            "oneOf": [
+                              { "type": "string", "pattern": "^\\?[a-zA-Z]" },
+                              { "type": "string" }
+                            ]
+                          },
+                          "predicate": { "type": "string" },
+                          "object": {
+                            "oneOf": [
+                              { "type": "string", "pattern": "^\\?[a-zA-Z]" },
+                              {},
+                              { "type": "string" }
+                            ]
+                          },
+                          "builtin": {
+                            "type": "object",
+                            "properties": {
+                              "name": {
+                                "type": "string",
+                                "enum": [
+                                  "swrlb:add",
+                                  "swrlb:subtract",
+                                  "swrlb:multiply",
+                                  "swrlb:divide",
+                                  "swrlb:greaterThan",
+                                  "swrlb:lessThan",
+                                  "swrlb:equal",
+                                  "swrlb:contains",
+                                  "swrlb:startsWith",
+                                  "swrlb:endsWith",
+                                  "swrlb:matches"
+                                ]
+                              },
+                              "arguments": {
+                                "type": "array",
+                                "items": {}
+                              },
+                              "result": { "type": "string", "pattern": "^\\?[a-zA-Z]" }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "consequent": {
+                  "type": "object",
+                  "properties": {
+                    "type": { "enum": ["and", "or"] },
+                    "atoms": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "type": {
+                            "type": "string",
+                            "enum": ["class", "property"]
+                          },
+                          "subject": {
+                            "oneOf": [
+                              { "type": "string", "pattern": "^\\?[a-zA-Z]" },
+                              { "type": "string" }
+                            ]
+                          },
+                          "predicate": { "type": "string" },
+                          "object": {
+                            "oneOf": [
+                              { "type": "string", "pattern": "^\\?[a-zA-Z]" },
+                              {},
+                              { "type": "string" }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "annotations": {
+                  "$ref": "#/properties/ontology/properties/metadata/properties/annotations"
+                }
+              }
+            }
+          }
+        },
+
+        "queries": {
+          "type": "object",
+          "description": "Pre-defined SPARQL queries",
+          "patternProperties": {
+            "^[a-zA-Z_][a-zA-Z0-9_]*$": {
+              "type": "object",
+              "properties": {
+                "@id": { "type": "string" },
+                "name": { "type": "string" },
+                "description": { "type": "string" },
+                "type": {
+                  "type": "string",
+                  "enum": ["select", "construct", "ask", "describe"]
+                },
+                "sparql": { "type": "string" },
+                "parameters": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": { "type": "string" },
+                      "type": { "type": "string" },
+                      "optional": { "type": "boolean" },
+                      "default": {}
+                    }
+                  }
+                },
+                "annotations": {
+                  "$ref": "#/properties/ontology/properties/metadata/properties/annotations"
+                }
+              },
+              "required": ["name", "sparql"]
+            }
+          }
+        },
+
+        "shapes": {
+          "type": "object",
+          "description": "SHACL or ShEx validation shapes",
+          "patternProperties": {
+            "^[a-zA-Z_][a-zA-Z0-9_:/.#-]*$": {
+              "type": "object",
+              "properties": {
+                "@id": { "type": "string" },
+                "name": { "type": "string" },
+                "targetClass": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
+                "targetNode": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
+                "targetSubjectsOf": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
+                "targetObjectsOf": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
+                "closed": { "type": "boolean" },
+                "ignoredProperties": {
+                  "type": "array",
+                  "items": { "type": "string" }
+                },
+                "propertyConstraints": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "path": { "type": "string" },
+                      "minCount": { "type": "integer" },
+                      "maxCount": { "type": "integer" },
+                      "valueType": { "type": "string" },
+                      "nodeKind": {
+                        "type": "string",
+                        "enum": ["iri", "literal", "blank", "iriOrLiteral"]
+                      },
+                      "minLength": { "type": "integer" },
+                      "maxLength": { "type": "integer" },
+                      "pattern": { "type": "string" },
+                      "in": { "type": "array" },
+                      "hasValue": {},
+                      "node": { "type": "string" },
+                      "class": { "type": "string" },
+                      "qualifiedValueShape": {
+                        "type": "object",
+                        "properties": {
+                          "node": { "type": "string" },
+                          "minCount": { "type": "integer" },
+                          "maxCount": { "type": "integer" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+
+        "mappings": {
+          "type": "object",
+          "description": "Mappings to external ontologies and schemas",
+          "patternProperties": {
+            "^[a-zA-Z_][a-zA-Z0-9_]*$": {
+              "type": "object",
+              "properties": {
+                "@id": { "type": "string" },
+                "source": {
+                  "type": "object",
+                  "properties": {
+                    "ontology": { "type": "string" },
+                    "entity": { "type": "string" },
+                    "version": { "type": "string" }
+                  }
+                },
+                "target": {
+                  "type": "object",
+                  "properties": {
+                    "ontology": { "type": "string" },
+                    "entity": { "type": "string" },
+                    "version": { "type": "string" }
+                  }
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "exactMatch",
+                    "closeMatch",
+                    "broadMatch",
+                    "narrowMatch",
+                    "relatedMatch"
+                  ]
+                },
+                "confidence": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "mappingMethod": {
+                  "type": "string",
+                  "enum": ["manual", "lexical", "structural", "machineLearning", "hybrid"]
+                },
+                "transformation": {
+                  "type": "object",
+                  "properties": {
+                    "type": { "enum": ["direct", "function", "sparql"] },
+                    "function": { "type": "string" },
+                    "parameters": { "type": "object" },
+                    "sparql": { "type": "string" }
+                  }
+                },
+                "annotations": {
+                  "$ref": "#/properties/ontology/properties/metadata/properties/annotations"
+                }
+              }
+            }
+          }
+        },
+
+        "views": {
+          "type": "object",
+          "description": "Pre-defined visualizations and views",
+          "patternProperties": {
+            "^[a-zA-Z_][a-zA-Z0-9_]*$": {
+              "type": "object",
+              "properties": {
+                "@id": { "type": "string" },
+                "name": { "type": "string" },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "hierarchy",
+                    "graph",
+                    "matrix",
+                    "tree",
+                    "forceDirected",
+                    "radial",
+                    "tabular"
+                  ]
+                },
+                "root": { "type": "string" },
+                "depth": { "type": "integer", "minimum": 1 },
+                "filters": {
+                  "type": "object",
+                  "properties": {
+                    "classes": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    },
+                    "properties": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    },
+                    "instances": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    },
+                    "propertyValues": {
+                      "type": "object",
+                      "additionalProperties": {}
+                    }
+                  }
+                },
+                "layout": {
+                  "type": "object",
+                  "properties": {
+                    "algorithm": { "type": "string" },
+                    "nodeSize": {
+                      "type": "object",
+                      "properties": {
+                        "width": { "type": "number" },
+                        "height": { "type": "number" }
+                      }
+                    },
+                    "spacing": { "type": "number" },
+                    "colorScheme": { "type": "string" },
+                    "groupBy": { "type": "string" },
+                    "sortBy": { "type": "string" }
+                  }
+                },
+                "annotations": {
+                  "$ref": "#/properties/ontology/properties/metadata/properties/annotations"
+                }
+              }
+            }
+          }
+        },
+
+        "skos": {
+          "type": "object",
+          "description": "SKOS support for thesauri and taxonomies",
+          "properties": {
+            "conceptSchemes": {
+              "type": "object",
+              "patternProperties": {
+                "^[a-zA-Z_][a-zA-Z0-9_:/.#-]*$": {
+                  "type": "object",
+                  "properties": {
+                    "@id": { "$ref": "#/definitions/iri" },
+                    "prefLabel": {
+                      "oneOf": [
+                        { "type": "string" },
+                        { "$ref": "#/definitions/langString" }
+                      ]
+                    },
+                    "definition": {
+                      "oneOf": [
+                        { "type": "string" },
+                        { "$ref": "#/definitions/langString" }
+                      ]
+                    },
+                    "hasTopConcept": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            },
+            "concepts": {
+              "type": "object",
+              "patternProperties": {
+                "^[a-zA-Z_][a-zA-Z0-9_:/.#-]*$": {
+                  "type": "object",
+                  "properties": {
+                    "@id": { "$ref": "#/definitions/iri" },
+                    "inScheme": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    },
+                    "topConceptOf": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    },
+                    "prefLabel": {
+                      "oneOf": [
+                        { "type": "string" },
+                        { "$ref": "#/definitions/langString" },
+                        {
+                          "type": "array",
+                          "items": { "$ref": "#/definitions/langString" }
+                        }
+                      ]
+                    },
+                    "altLabel": {
+                      "type": "array",
+                      "items": {
+                        "oneOf": [
+                          { "type": "string" },
+                          { "$ref": "#/definitions/langString" }
+                        ]
+                      }
+                    },
+                    "hiddenLabel": {
+                      "type": "array",
+                      "items": {
+                        "oneOf": [
+                          { "type": "string" },
+                          { "$ref": "#/definitions/langString" }
+                        ]
+                      }
+                    },
+                    "definition": {
+                      "type": "array",
+                      "items": {
+                        "oneOf": [
+                          { "type": "string" },
+                          { "$ref": "#/definitions/langString" }
+                        ]
+                      }
+                    },
+                    "scopeNote": {
+                      "type": "array",
+                      "items": {
+                        "oneOf": [
+                          { "type": "string" },
+                          { "$ref": "#/definitions/langString" }
+                        ]
+                      }
+                    },
+                    "example": {
+                      "type": "array",
+                      "items": {
+                        "oneOf": [
+                          { "type": "string" },
+                          { "$ref": "#/definitions/langString" }
+                        ]
+                      }
+                    },
+                    "broader": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    },
+                    "narrower": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    },
+                    "related": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    },
+                    "exactMatch": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    },
+                    "closeMatch": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+
+        "history": {
+          "type": "object",
+          "description": "Ontology change history",
+          "properties": {
+            "entries": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "@id": { "type": "string" },
+                  "date": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "author": { "type": "string" },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "add",
+                      "remove",
+                      "modify",
+                      "deprecate",
+                      "import",
+                      "export"
+                    ]
+                  },
+                  "target": {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "enum": [
+                          "class",
+                          "property",
+                          "individual",
+                          "rule",
+                          "axiom"
+                        ]
+                      },
+                      "id": { "type": "string" }
+                    }
+                  },
+                  "changes": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "property": { "type": "string" },
+                        "oldValue": {},
+                        "newValue": {}
+                      }
+                    }
+                  },
+                  "comment": { "type": "string" }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

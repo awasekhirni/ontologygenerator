@@ -1,0 +1,1852 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "meta": {
+    "templateVersion": "2.0.0",
+    "name": "Universal SPA Semantic Blueprint",
+    "description": "Complete website structure for content, forms, deep web, ads, and SEO",
+    "compatibleWith": [
+      "Google",
+      "Bing",
+      "DuckDuckGo",
+      "Yandex",
+      "Baidu",
+      "Brave",
+      "Qwant"
+    ],
+    "supportedStandards": [
+      "Schema.org",
+      "JSON-LD",
+      "OpenGraph",
+      "Twitter Cards",
+      "Dublin Core"
+    ],
+    "lastUpdated": "2026-04-13T00:00:00Z"
+  },
+  "siteMap": {
+    "domain": "https://example.com",
+    "siteName": "Example Website",
+    "siteDescription": "Comprehensive platform for...",
+    "siteLanguage": "en-US",
+    "alternateLanguages": [
+      "es-ES",
+      "fr-FR",
+      "de-DE"
+    ],
+    "defaultRoute": "/home",
+    "routes": [
+      {
+        "path": "/home",
+        "title": "Home",
+        "contentType": "homepage",
+        "visibility": "public",
+        "priority": 1,
+        "changefreq": "daily",
+        "lastModified": "2026-04-13T00:00:00Z",
+        "requiresAuth": false,
+        "rolesAllowed": [
+          "*"
+        ],
+        "seo": {
+          "metaTitle": "Home | Example Website",
+          "metaDescription": "Welcome to the best platform for...",
+          "metaKeywords": [
+            "keyword1",
+            "keyword2"
+          ],
+          "ogImage": "https://example.com/og-home.jpg",
+          "canonicalUrl": "https://example.com/home",
+          "noIndex": false,
+          "noFollow": false
+        }
+      },
+      {
+        "path": "/dashboard",
+        "title": "User Dashboard",
+        "contentType": "dashboard",
+        "visibility": "deep-web",
+        "priority": 0.5,
+        "changefreq": "always",
+        "requiresAuth": true,
+        "rolesAllowed": [
+          "user",
+          "admin"
+        ],
+        "seo": {
+          "metaTitle": "My Dashboard | Example",
+          "metaDescription": "Your personal dashboard",
+          "noIndex": true,
+          "noFollow": true,
+          "disallowCrawl": true
+        },
+        "deepWeb": {
+          "type": "authenticated-area",
+          "authProvider": "jwt-oauth2",
+          "sessionRequired": true,
+          "csrfProtected": true,
+          "dataIsolation": "user-specific",
+          "cacheControl": "private, no-store"
+        }
+      },
+      {
+        "path": "/admin/panel",
+        "title": "Admin Panel",
+        "contentType": "admin-dashboard",
+        "visibility": "deep-web",
+        "priority": 0.1,
+        "requiresAuth": true,
+        "rolesAllowed": [
+          "admin",
+          "superadmin"
+        ],
+        "deepWeb": {
+          "type": "restricted-admin",
+          "auditLogging": true,
+          "ipWhitelist": [
+            "192.168.1.0/24"
+          ],
+          "mfaRequired": true
+        }
+      }
+    ]
+  },
+  "globalComponents": {
+    "header": {
+      "componentId": "global-header",
+      "componentType": "common",
+      "priority": "critical",
+      "ssrRequired": true,
+      "content": {
+        "logo": {
+          "src": "https://example.com/logo.svg",
+          "alt": "Example Website Logo",
+          "link": "/home",
+          "width": 150,
+          "height": 40
+        },
+        "navigation": {
+          "type": "main-menu",
+          "items": [
+            {
+              "label": "Home",
+              "link": "/home",
+              "activeOnExact": true,
+              "requiresAuth": false
+            },
+            {
+              "label": "Products",
+              "link": "/products",
+              "activeOnPattern": "/products",
+              "requiresAuth": false
+            },
+            {
+              "label": "Blog",
+              "link": "/blog",
+              "activeOnPattern": "/blog",
+              "requiresAuth": false
+            },
+            {
+              "label": "Dashboard",
+              "link": "/dashboard",
+              "requiresAuth": true,
+              "rolesAllowed": [
+                "user",
+                "admin"
+              ]
+            }
+          ]
+        },
+        "searchBar": {
+          "enabled": true,
+          "type": "instant-search",
+          "endpoint": "/api/search",
+          "placeholder": "Search products, articles...",
+          "debounceMs": 300
+        },
+        "userMenu": {
+          "authenticatedContent": {
+            "avatar": "/api/user/avatar",
+            "menuItems": [
+              {
+                "label": "My Profile",
+                "link": "/profile"
+              },
+              {
+                "label": "Account Settings",
+                "link": "/settings"
+              },
+              {
+                "label": "Logout",
+                "action": "logout"
+              }
+            ]
+          },
+          "guestContent": {
+            "items": [
+              {
+                "label": "Login",
+                "link": "/login"
+              },
+              {
+                "label": "Register",
+                "link": "/register"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "footer": {
+      "componentId": "global-footer",
+      "componentType": "common",
+      "content": {
+        "copyright": "© 2026 Example Website. All rights reserved.",
+        "columns": [
+          {
+            "title": "Company",
+            "links": [
+              {
+                "label": "About",
+                "link": "/about"
+              },
+              {
+                "label": "Careers",
+                "link": "/careers"
+              },
+              {
+                "label": "Press",
+                "link": "/press"
+              }
+            ]
+          },
+          {
+            "title": "Support",
+            "links": [
+              {
+                "label": "Help Center",
+                "link": "/help"
+              },
+              {
+                "label": "Contact",
+                "link": "/contact"
+              },
+              {
+                "label": "FAQs",
+                "link": "/faqs"
+              }
+            ]
+          }
+        ],
+        "socialLinks": [
+          {
+            "platform": "facebook",
+            "url": "https://facebook.com/example",
+            "ariaLabel": "Facebook"
+          },
+          {
+            "platform": "x",
+            "url": "https://x.com/example",
+            "ariaLabel": "X (Twitter)"
+          },
+          {
+            "platform": "linkedin",
+            "url": "https://linkedin.com/company/example",
+            "ariaLabel": "LinkedIn"
+          }
+        ],
+        "newsletterSignup": {
+          "enabled": true,
+          "endpoint": "/api/newsletter/subscribe",
+          "method": "POST"
+        }
+      }
+    },
+    "sidePanels": {
+      "leftPanel": {
+        "componentId": "global-left-panel",
+        "enabled": true,
+        "defaultState": "collapsed",
+        "position": "left",
+        "width": "280px",
+        "content": {
+          "categoryNavigation": {
+            "enabled": true,
+            "dataSource": "/api/categories"
+          },
+          "filters": {
+            "enabled": true,
+            "type": "dynamic-facets"
+          }
+        }
+      },
+      "rightPanel": {
+        "componentId": "global-right-panel",
+        "enabled": true,
+        "defaultState": "collapsed",
+        "position": "right",
+        "width": "320px",
+        "content": {
+          "cart": {
+            "enabled": true,
+            "emptyMessage": "Your cart is empty"
+          },
+          "recentlyViewed": {
+            "enabled": true,
+            "maxItems": 5,
+            "storageType": "localStorage"
+          },
+          "chatSupport": {
+            "enabled": true,
+            "status": "online",
+            "responseTime": "< 2 min"
+          }
+        }
+      }
+    },
+    "modals": {
+      "loginModal": {
+        "componentId": "modal-login",
+        "trigger": "click",
+        "content": "form",
+        "formId": "login-form"
+      },
+      "cookieConsent": {
+        "enabled": true,
+        "position": "bottom",
+        "theme": "gdpr-compliant"
+      }
+    }
+  },
+  "contentTypes": {
+    "blog-post": {
+      "displayName": "Blog Article",
+      "schema": {
+        "id": "string (uuid)",
+        "title": "string",
+        "slug": "string",
+        "excerpt": "string (max 160 chars)",
+        "body": "string (HTML/Markdown)",
+        "featuredImage": "string (url)",
+        "author": {
+          "name": "string",
+          "avatar": "string (url)",
+          "bio": "string"
+        },
+        "publishDate": "datetime (ISO8601)",
+        "modifiedDate": "datetime",
+        "category": "string",
+        "tags": [
+          "string"
+        ],
+        "readingTime": "number (minutes)",
+        "likes": "number",
+        "comments": "number"
+      },
+      "structuredData": {
+        "@type": "BlogPosting",
+        "headline": "{{title}}",
+        "datePublished": "{{publishDate}}",
+        "author": {
+          "@type": "Person",
+          "name": "{{author.name}}"
+        }
+      },
+      "example": {
+        "id": "post-456",
+        "title": "10 Tips for Better SEO",
+        "slug": "10-tips-better-seo",
+        "excerpt": "Learn how to improve your search rankings with these actionable tips.",
+        "body": "<p>Full article content here...</p>",
+        "featuredImage": "https://example.com/images/seo-tips.jpg",
+        "author": {
+          "name": "Jane Doe",
+          "avatar": "https://example.com/avatars/jane.jpg",
+          "bio": "SEO Specialist"
+        },
+        "publishDate": "2026-04-10T09:00:00Z",
+        "modifiedDate": "2026-04-12T14:30:00Z",
+        "category": "SEO",
+        "tags": [
+          "SEO",
+          "marketing",
+          "tips"
+        ],
+        "readingTime": 5,
+        "likes": 342,
+        "comments": 28
+      }
+    },
+    "product": {
+      "displayName": "E-commerce Product",
+      "schema": {
+        "id": "string (sku)",
+        "name": "string",
+        "description": "string",
+        "shortDescription": "string (max 200 chars)",
+        "price": "number (decimal)",
+        "compareAtPrice": "number (nullable)",
+        "currency": "string (ISO 4217)",
+        "inStock": "boolean",
+        "stockQuantity": "number",
+        "images": [
+          "string (urls)"
+        ],
+        "videos": [
+          "string (urls)"
+        ],
+        "categories": [
+          "string"
+        ],
+        "tags": [
+          "string"
+        ],
+        "attributes": {
+          "brand": "string",
+          "color": [
+            "string"
+          ],
+          "size": [
+            "string"
+          ],
+          "material": "string",
+          "weight": "string"
+        },
+        "reviews": {
+          "averageRating": "number (0-5)",
+          "totalReviews": "number",
+          "ratingDistribution": {
+            "1": "number",
+            "2": "number",
+            "3": "number",
+            "4": "number",
+            "5": "number"
+          }
+        },
+        "variants": [
+          {
+            "sku": "string",
+            "attributes": {},
+            "price": "number",
+            "inStock": "boolean"
+          }
+        ],
+        "relatedProducts": [
+          "string (skus)"
+        ],
+        "upsellProducts": [
+          "string (skus)"
+        ]
+      },
+      "structuredData": {
+        "@type": "Product",
+        "name": "{{name}}",
+        "description": "{{description}}",
+        "sku": "{{id}}",
+        "offers": {
+          "@type": "Offer",
+          "price": "{{price}}",
+          "priceCurrency": "{{currency}}",
+          "availability": "https://schema.org/{{#if inStock}}InStock{{else}}OutOfStock{{/if}}"
+        },
+        "aggregateRating": {
+          "@type": "AggregateRating",
+          "ratingValue": "{{reviews.averageRating}}",
+          "reviewCount": "{{reviews.totalReviews}}"
+        }
+      },
+      "example": {
+        "id": "WH-1000XM5",
+        "name": "Wireless Noise-Cancelling Headphones",
+        "description": "Premium over-ear headphones with industry-leading noise cancellation and 30-hour battery life.",
+        "shortDescription": "Best-in-class ANC headphones",
+        "price": 299.99,
+        "compareAtPrice": 399.99,
+        "currency": "USD",
+        "inStock": true,
+        "stockQuantity": 145,
+        "images": [
+          "https://example.com/images/headphones-1.jpg",
+          "https://example.com/images/headphones-2.jpg"
+        ],
+        "videos": [
+          "https://youtube.com/watch?v=xyz"
+        ],
+        "categories": [
+          "Electronics",
+          "Audio",
+          "Headphones"
+        ],
+        "tags": [
+          "wireless",
+          "noise-cancelling",
+          "bluetooth"
+        ],
+        "attributes": {
+          "brand": "Sony",
+          "color": [
+            "Black",
+            "Silver"
+          ],
+          "material": "Leather, Plastic",
+          "weight": "250g"
+        },
+        "reviews": {
+          "averageRating": 4.7,
+          "totalReviews": 1245,
+          "ratingDistribution": {
+            "1": 5,
+            "2": 20,
+            "3": 70,
+            "4": 300,
+            "5": 850
+          }
+        },
+        "variants": [
+          {
+            "sku": "WH-1000XM5-BLK",
+            "attributes": {
+              "color": "Black"
+            },
+            "price": 299.99,
+            "inStock": true
+          },
+          {
+            "sku": "WH-1000XM5-SLV",
+            "attributes": {
+              "color": "Silver"
+            },
+            "price": 299.99,
+            "inStock": true
+          }
+        ],
+        "relatedProducts": [
+          "WF-1000XM5",
+          "XB910N"
+        ],
+        "upsellProducts": [
+          "WH-1000XM5-DELUXE"
+        ]
+      }
+    },
+    "form": {
+      "displayName": "Web Form",
+      "schema": {
+        "formId": "string",
+        "formName": "string",
+        "method": "GET | POST | PUT | DELETE",
+        "action": "string (endpoint)",
+        "encType": "application/x-www-form-urlencoded | multipart/form-data | application/json",
+        "csrfProtected": "boolean",
+        "validation": "client | server | both",
+        "fields": [
+          {
+            "name": "string",
+            "label": "string",
+            "type": "text | email | password | number | tel | date | textarea | select | checkbox | radio | file | hidden | recaptcha",
+            "required": "boolean",
+            "placeholder": "string (optional)",
+            "defaultValue": "string | number | boolean (optional)",
+            "minLength": "number (optional)",
+            "maxLength": "number (optional)",
+            "pattern": "string (regex) (optional)",
+            "options": [
+              {
+                "value": "string",
+                "label": "string"
+              }
+            ],
+            "validationRules": [
+              {
+                "rule": "required | email | min | max | pattern | custom",
+                "message": "string"
+              }
+            ],
+            "conditionalVisibility": {
+              "dependsOn": "string (fieldName)",
+              "operator": "equals | notEquals | contains",
+              "value": "any"
+            }
+          }
+        ],
+        "submitButton": {
+          "label": "string",
+          "loadingLabel": "string (optional)",
+          "disabledUntilValid": "boolean"
+        },
+        "successAction": {
+          "type": "redirect | modal | message",
+          "redirectUrl": "string (if type=redirect)",
+          "successMessage": "string (if type=modal|message)"
+        },
+        "rateLimiting": {
+          "enabled": "boolean",
+          "maxSubmissionsPerIp": "number",
+          "timeWindowSeconds": "number"
+        }
+      },
+      "example": {
+        "formId": "contact-form",
+        "formName": "Contact Us",
+        "method": "POST",
+        "action": "/api/contact/submit",
+        "encType": "application/json",
+        "csrfProtected": true,
+        "validation": "both",
+        "fields": [
+          {
+            "name": "fullName",
+            "label": "Full Name",
+            "type": "text",
+            "required": true,
+            "placeholder": "John Doe",
+            "minLength": 2,
+            "maxLength": 100,
+            "validationRules": [
+              {
+                "rule": "required",
+                "message": "Name is required"
+              },
+              {
+                "rule": "min:2",
+                "message": "Name must be at least 2 characters"
+              }
+            ]
+          },
+          {
+            "name": "email",
+            "label": "Email Address",
+            "type": "email",
+            "required": true,
+            "placeholder": "john@example.com",
+            "validationRules": [
+              {
+                "rule": "required",
+                "message": "Email is required"
+              },
+              {
+                "rule": "email",
+                "message": "Please enter a valid email"
+              }
+            ]
+          },
+          {
+            "name": "inquiryType",
+            "label": "Inquiry Type",
+            "type": "select",
+            "required": true,
+            "options": [
+              {
+                "value": "sales",
+                "label": "Sales"
+              },
+              {
+                "value": "support",
+                "label": "Technical Support"
+              },
+              {
+                "value": "billing",
+                "label": "Billing"
+              }
+            ]
+          },
+          {
+            "name": "message",
+            "label": "Message",
+            "type": "textarea",
+            "required": true,
+            "placeholder": "How can we help you?",
+            "maxLength": 2000
+          },
+          {
+            "name": "newsletterOptIn",
+            "label": "Subscribe to newsletter",
+            "type": "checkbox",
+            "required": false,
+            "defaultValue": false
+          },
+          {
+            "name": "recaptcha",
+            "type": "recaptcha",
+            "required": true
+          }
+        ],
+        "submitButton": {
+          "label": "Send Message",
+          "loadingLabel": "Sending...",
+          "disabledUntilValid": true
+        },
+        "successAction": {
+          "type": "message",
+          "successMessage": "Thank you! We'll get back to you within 24 hours."
+        },
+        "rateLimiting": {
+          "enabled": true,
+          "maxSubmissionsPerIp": 5,
+          "timeWindowSeconds": 3600
+        }
+      }
+    },
+    "video": {
+      "displayName": "Video Content",
+      "schema": {
+        "id": "string",
+        "title": "string",
+        "description": "string",
+        "thumbnailUrl": "string",
+        "contentUrl": "string (mp4/m3u8)",
+        "embedUrl": "string (iframe src)",
+        "duration": "string (ISO 8601)",
+        "uploadDate": "datetime",
+        "channel": "string",
+        "views": "number",
+        "likes": "number",
+        "transcript": "string (optional)",
+        "captions": [
+          {
+            "language": "string",
+            "url": "string (vtt file)"
+          }
+        ]
+      },
+      "structuredData": {
+        "@type": "VideoObject",
+        "name": "{{title}}",
+        "description": "{{description}}",
+        "thumbnailUrl": "{{thumbnailUrl}}",
+        "contentUrl": "{{contentUrl}}",
+        "duration": "{{duration}}",
+        "uploadDate": "{{uploadDate}}"
+      }
+    },
+    "event": {
+      "displayName": "Event / Calendar Item",
+      "schema": {
+        "id": "string",
+        "name": "string",
+        "description": "string",
+        "startDate": "datetime (ISO8601)",
+        "endDate": "datetime",
+        "timezone": "string (tz database)",
+        "location": {
+          "name": "string",
+          "address": "string",
+          "latitude": "number",
+          "longitude": "number"
+        },
+        "virtualLink": "string (optional)",
+        "organizer": {
+          "name": "string",
+          "email": "string",
+          "url": "string"
+        },
+        "ticketInfo": {
+          "url": "string",
+          "price": "number",
+          "currency": "string",
+          "availability": "boolean"
+        },
+        "attendeeCount": "number",
+        "category": "string"
+      },
+      "structuredData": {
+        "@type": "Event",
+        "name": "{{name}}",
+        "startDate": "{{startDate}}",
+        "endDate": "{{endDate}}",
+        "location": {
+          "@type": "Place",
+          "name": "{{location.name}}",
+          "address": "{{location.address}}"
+        }
+      }
+    },
+    "faq": {
+      "displayName": "FAQ Page / Section",
+      "schema": {
+        "id": "string",
+        "title": "string (section title)",
+        "questions": [
+          {
+            "question": "string",
+            "answer": "string (HTML/text)",
+            "answerStructured": "string (optional plain text for schema)",
+            "category": "string (optional)"
+          }
+        ]
+      },
+      "structuredData": {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "{{question}}",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "{{answerStructured}}"
+            }
+          }
+        ]
+      }
+    },
+    "directory-listing": {
+      "displayName": "Directory / People / Business Listing",
+      "schema": {
+        "id": "string",
+        "name": "string",
+        "type": "person | business | organization | service",
+        "description": "string",
+        "image": "string (url)",
+        "contactInfo": {
+          "email": "string",
+          "phone": "string",
+          "website": "string",
+          "address": {
+            "street": "string",
+            "city": "string",
+            "state": "string",
+            "postalCode": "string",
+            "country": "string"
+          }
+        },
+        "socialProfiles": [
+          "string (urls)"
+        ],
+        "rating": {
+          "average": "number",
+          "count": "number"
+        },
+        "openingHours": [
+          {
+            "day": "Monday-Friday",
+            "hours": "9:00-17:00"
+          }
+        ],
+        "geo": {
+          "latitude": "number",
+          "longitude": "number"
+        },
+        "categories": [
+          "string"
+        ],
+        "tags": [
+          "string"
+        ]
+      },
+      "structuredData": {
+        "@type": "LocalBusiness",
+        "name": "{{name}}",
+        "description": "{{description}}",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "{{contactInfo.address.street}}",
+          "addressLocality": "{{contactInfo.address.city}}"
+        }
+      }
+    },
+    "job-posting": {
+      "displayName": "Job Listing",
+      "schema": {
+        "id": "string",
+        "title": "string",
+        "department": "string",
+        "location": {
+          "type": "remote | hybrid | on-site",
+          "city": "string",
+          "country": "string"
+        },
+        "employmentType": "full-time | part-time | contract | internship",
+        "salary": {
+          "min": "number",
+          "max": "number",
+          "currency": "string",
+          "period": "hourly | monthly | yearly"
+        },
+        "description": "string",
+        "responsibilities": [
+          "string"
+        ],
+        "requirements": [
+          "string"
+        ],
+        "benefits": [
+          "string"
+        ],
+        "postedDate": "datetime",
+        "closingDate": "datetime",
+        "applyUrl": "string",
+        "hiringOrganization": {
+          "name": "string",
+          "logo": "string (url)",
+          "website": "string"
+        }
+      },
+      "structuredData": {
+        "@type": "JobPosting",
+        "title": "{{title}}",
+        "datePosted": "{{postedDate}}",
+        "validThrough": "{{closingDate}}",
+        "employmentType": "{{employmentType}}",
+        "hiringOrganization": {
+          "@type": "Organization",
+          "name": "{{hiringOrganization.name}}"
+        }
+      }
+    },
+    "knowledge-base": {
+      "displayName": "Knowledge Base Article",
+      "schema": {
+        "id": "string",
+        "title": "string",
+        "content": "string (HTML)",
+        "category": "string",
+        "subcategory": "string",
+        "tags": [
+          "string"
+        ],
+        "difficulty": "beginner | intermediate | advanced",
+        "estimatedReadTime": "number",
+        "helpful": {
+          "yes": "number",
+          "no": "number"
+        },
+        "relatedArticles": [
+          "string (ids)"
+        ]
+      }
+    },
+    "user-profile": {
+      "displayName": "User Profile (Deep Web)",
+      "schema": {
+        "userId": "string",
+        "username": "string",
+        "displayName": "string",
+        "avatar": "string (url)",
+        "bio": "string",
+        "joinDate": "datetime",
+        "lastActive": "datetime",
+        "stats": {
+          "posts": "number",
+          "followers": "number",
+          "following": "number"
+        },
+        "privacySettings": {
+          "profileVisibility": "public | private | contacts",
+          "showEmail": "boolean"
+        },
+        "preferences": {
+          "theme": "light | dark | system",
+          "notifications": "object"
+        }
+      },
+      "deepWeb": {
+        "ownerOnly": true,
+        "dataSensitivity": "pii"
+      }
+    }
+  },
+  "advertising": {
+    "enabled": true,
+    "adPlatforms": [
+      {
+        "provider": "Google AdSense",
+        "enabled": true,
+        "accountId": "pub-xxxxxxxxxxxx",
+        "consentRequired": true,
+        "gdprCompliant": true,
+        "placements": [
+          {
+            "placementId": "ad-header-banner",
+            "location": "header-bottom",
+            "size": "728x90",
+            "type": "display",
+            "responsive": true,
+            "lazyLoad": false,
+            "targeting": {
+              "keywords": [
+                "technology",
+                "ecommerce"
+              ],
+              "customParams": {
+                "pageType": "homepage"
+              }
+            }
+          },
+          {
+            "placementId": "ad-sidebar-1",
+            "location": "sidebar-right-top",
+            "size": "300x250",
+            "type": "display",
+            "responsive": true,
+            "lazyLoad": true
+          },
+          {
+            "placementId": "ad-in-content-1",
+            "location": "content-mid",
+            "size": "fluid",
+            "type": "in-article",
+            "insertAfter": "2nd-paragraph",
+            "lazyLoad": true
+          }
+        ]
+      },
+      {
+        "provider": "Amazon Associates",
+        "enabled": true,
+        "storeId": "example-20",
+        "placements": [
+          {
+            "placementId": "amazon-native-1",
+            "location": "sidebar-right-bottom",
+            "type": "native-shopping",
+            "category": "electronics"
+          }
+        ]
+      },
+      {
+        "provider": "Custom Direct Ads",
+        "enabled": true,
+        "placements": [
+          {
+            "placementId": "direct-sponsored-post",
+            "location": "content-top",
+            "type": "sponsored-content",
+            "advertiser": "Brand Name",
+            "expiryDate": "2026-12-31"
+          }
+        ]
+      }
+    ],
+    "adRefresh": {
+      "enabled": true,
+      "intervalSeconds": 30,
+      "visibleOnly": true
+    },
+    "adBlockDetection": {
+      "enabled": true,
+      "message": "Please disable ad blocker to support our free content",
+      "alternativeContent": true
+    },
+    "iabConsent": {
+      "framework": "TCF v2.2",
+      "cmpId": 123,
+      "gdprApplies": true,
+      "ccpaApplies": true
+    },
+    "structuredDataForAds": {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "hasPart": [
+        {
+          "@type": "SiteNavigationElement",
+          "name": "Advertisement",
+          "url": "https://example.com/advertising-policy"
+        }
+      ]
+    }
+  },
+  "pageComponents": {
+    "/home": {
+      "pageId": "page-home",
+      "layout": {
+        "type": "default",
+        "regions": [
+          "header",
+          "sidebar-left",
+          "main",
+          "sidebar-right",
+          "footer"
+        ],
+        "gridTemplate": "header auto / 250px 1fr 300px"
+      },
+      "components": [
+        {
+          "componentId": "hero-banner",
+          "componentType": "content",
+          "position": "main-top",
+          "contentType": "banner",
+          "data": {
+            "headline": "Welcome to Example",
+            "subheadline": "The best solution for your needs",
+            "backgroundImage": "https://example.com/hero-bg.jpg",
+            "ctaButton": {
+              "label": "Explore",
+              "link": "/products"
+            }
+          },
+          "structuredData": {
+            "@type": "WPHeader",
+            "headline": "Welcome to Example"
+          }
+        },
+        {
+          "componentId": "featured-products",
+          "componentType": "dynamic",
+          "position": "main-middle",
+          "contentType": "product-grid",
+          "dataSource": {
+            "type": "api",
+            "endpoint": "/api/products/featured",
+            "cacheTTL": 3600
+          }
+        },
+        {
+          "componentId": "newsletter-signup",
+          "componentType": "form",
+          "position": "sidebar-right-middle",
+          "contentType": "form",
+          "formId": "newsletter-form",
+          "formRef": "forms.newsletterSignup"
+        }
+      ]
+    },
+    "/products/:id": {
+      "pageId": "page-product-detail",
+      "layout": {
+        "type": "product",
+        "regions": [
+          "header",
+          "main",
+          "sidebar-right",
+          "footer"
+        ]
+      },
+      "components": [
+        {
+          "componentId": "product-gallery",
+          "componentType": "dynamic",
+          "position": "main-left",
+          "contentType": "image-gallery",
+          "dataSource": {
+            "type": "routeParam",
+            "param": "id",
+            "endpoint": "/api/products/{id}/images"
+          }
+        },
+        {
+          "componentId": "product-info",
+          "componentType": "dynamic",
+          "position": "main-right",
+          "contentType": "product",
+          "dataSource": {
+            "type": "routeParam",
+            "param": "id",
+            "endpoint": "/api/products/{id}"
+          },
+          "structuredData": {
+            "@type": "Product",
+            "name": "{{product.name}}"
+          }
+        },
+        {
+          "componentId": "add-to-cart-form",
+          "componentType": "form",
+          "position": "main-right-bottom",
+          "contentType": "form",
+          "formId": "add-to-cart",
+          "fields": [
+            {
+              "name": "productId",
+              "type": "hidden",
+              "value": "{{route.params.id}}"
+            },
+            {
+              "name": "quantity",
+              "type": "number",
+              "required": true,
+              "defaultValue": 1,
+              "min": 1,
+              "max": 99
+            }
+          ],
+          "submitButton": {
+            "label": "Add to Cart",
+            "action": "/api/cart/add"
+          }
+        },
+        {
+          "componentId": "reviews-section",
+          "componentType": "dynamic",
+          "position": "main-bottom",
+          "contentType": "user-reviews",
+          "dataSource": {
+            "type": "api",
+            "endpoint": "/api/products/{id}/reviews"
+          }
+        },
+        {
+          "componentId": "write-review-form",
+          "componentType": "form",
+          "position": "main-bottom-after-reviews",
+          "contentType": "form",
+          "formId": "write-review",
+          "requiresAuth": true,
+          "fields": [
+            {
+              "name": "rating",
+              "type": "select",
+              "required": true,
+              "options": [
+                1,
+                2,
+                3,
+                4,
+                5
+              ]
+            },
+            {
+              "name": "title",
+              "type": "text",
+              "required": true,
+              "maxLength": 100
+            },
+            {
+              "name": "comment",
+              "type": "textarea",
+              "required": true,
+              "maxLength": 2000
+            }
+          ]
+        }
+      ]
+    },
+    "/contact": {
+      "pageId": "page-contact",
+      "components": [
+        {
+          "componentId": "contact-form",
+          "componentType": "form",
+          "position": "main-center",
+          "contentType": "form",
+          "formRef": "forms.contact",
+          "structuredData": {
+            "@type": "ContactPage"
+          }
+        },
+        {
+          "componentId": "map-embed",
+          "componentType": "embed",
+          "position": "sidebar-right",
+          "contentType": "map",
+          "data": {
+            "src": "https://maps.google.com/..."
+          }
+        }
+      ]
+    },
+    "/dashboard": {
+      "pageId": "page-dashboard",
+      "visibility": "deep-web",
+      "requiresAuth": true,
+      "components": [
+        {
+          "componentId": "user-stats",
+          "componentType": "dynamic",
+          "dataSource": {
+            "type": "authenticated-api",
+            "endpoint": "/api/user/stats"
+          }
+        },
+        {
+          "componentId": "recent-orders",
+          "componentType": "dynamic",
+          "dataSource": {
+            "type": "authenticated-api",
+            "endpoint": "/api/user/orders?limit=5"
+          }
+        },
+        {
+          "componentId": "profile-completeness",
+          "componentType": "form",
+          "formId": "profile-completeness",
+          "fields": [
+            {
+              "name": "phone",
+              "type": "tel",
+              "required": false
+            },
+            {
+              "name": "address",
+              "type": "text",
+              "required": false
+            }
+          ]
+        }
+      ]
+    },
+    "/admin/content/new": {
+      "pageId": "page-admin-content-create",
+      "visibility": "deep-web",
+      "requiresAuth": true,
+      "rolesAllowed": [
+        "admin",
+        "editor"
+      ],
+      "components": [
+        {
+          "componentId": "content-editor",
+          "componentType": "form",
+          "formId": "create-content",
+          "contentTypeSelector": true,
+          "fields": [
+            {
+              "name": "contentType",
+              "type": "select",
+              "options": [
+                "blog-post",
+                "product",
+                "event",
+                "job-posting"
+              ]
+            },
+            {
+              "name": "title",
+              "type": "text",
+              "required": true
+            },
+            {
+              "name": "slug",
+              "type": "text",
+              "required": true,
+              "pattern": "^[a-z0-9-]+$"
+            },
+            {
+              "name": "body",
+              "type": "rich-text-editor",
+              "required": true
+            },
+            {
+              "name": "seoMetaTitle",
+              "type": "text",
+              "maxLength": 60
+            },
+            {
+              "name": "seoMetaDescription",
+              "type": "textarea",
+              "maxLength": 160
+            },
+            {
+              "name": "publishNow",
+              "type": "checkbox",
+              "defaultValue": true
+            },
+            {
+              "name": "scheduleDate",
+              "type": "datetime-local",
+              "conditionalVisibility": {
+                "dependsOn": "publishNow",
+                "operator": "equals",
+                "value": false
+              }
+            }
+          ],
+          "submitButton": {
+            "label": "Publish",
+            "action": "/api/admin/content"
+          }
+        }
+      ]
+    }
+  },
+  "forms": {
+    "newsletterSignup": {
+      "formId": "newsletter-signup",
+      "method": "POST",
+      "action": "/api/newsletter/subscribe",
+      "fields": [
+        {
+          "name": "email",
+          "type": "email",
+          "required": true,
+          "validationRules": [
+            {
+              "rule": "email",
+              "message": "Valid email required"
+            }
+          ]
+        },
+        {
+          "name": "consent",
+          "type": "checkbox",
+          "required": true,
+          "label": "I agree to receive marketing emails"
+        }
+      ]
+    },
+    "login": {
+      "formId": "login-form",
+      "method": "POST",
+      "action": "/api/auth/login",
+      "csrfProtected": true,
+      "fields": [
+        {
+          "name": "email",
+          "type": "email",
+          "required": true
+        },
+        {
+          "name": "password",
+          "type": "password",
+          "required": true,
+          "minLength": 8
+        },
+        {
+          "name": "rememberMe",
+          "type": "checkbox",
+          "defaultValue": false
+        }
+      ],
+      "successAction": {
+        "type": "redirect",
+        "redirectUrl": "/dashboard"
+      }
+    },
+    "register": {
+      "formId": "register-form",
+      "method": "POST",
+      "action": "/api/auth/register",
+      "fields": [
+        {
+          "name": "fullName",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "email",
+          "type": "email",
+          "required": true
+        },
+        {
+          "name": "password",
+          "type": "password",
+          "required": true,
+          "minLength": 8
+        },
+        {
+          "name": "confirmPassword",
+          "type": "password",
+          "required": true,
+          "validationRules": [
+            {
+              "rule": "match:password",
+              "message": "Passwords must match"
+            }
+          ]
+        },
+        {
+          "name": "termsAccepted",
+          "type": "checkbox",
+          "required": true
+        }
+      ]
+    },
+    "checkout": {
+      "formId": "checkout-form",
+      "method": "POST",
+      "action": "/api/checkout",
+      "encType": "application/json",
+      "fields": [
+        {
+          "name": "shippingAddress",
+          "type": "address-group",
+          "required": true
+        },
+        {
+          "name": "billingAddress",
+          "type": "address-group",
+          "required": true
+        },
+        {
+          "name": "paymentMethod",
+          "type": "select",
+          "options": [
+            "credit_card",
+            "paypal",
+            "apple_pay"
+          ],
+          "required": true
+        },
+        {
+          "name": "cardDetails",
+          "type": "payment-card",
+          "conditionalVisibility": {
+            "dependsOn": "paymentMethod",
+            "operator": "equals",
+            "value": "credit_card"
+          }
+        },
+        {
+          "name": "promoCode",
+          "type": "text",
+          "required": false
+        }
+      ]
+    }
+  },
+  "deepWeb": {
+    "description": "Areas not accessible to search engines (authenticated, paywalled, or restricted)",
+    "protectedRoutes": [
+      "/dashboard",
+      "/account/*",
+      "/orders/*",
+      "/admin/*",
+      "/checkout",
+      "/profile",
+      "/settings"
+    ],
+    "authMethods": [
+      "oauth2",
+      "jwt",
+      "session-cookie",
+      "mfa"
+    ],
+    "paywalledContent": {
+      "/premium/*": {
+        "type": "subscription",
+        "plans": [
+          "basic",
+          "pro",
+          "enterprise"
+        ],
+        "sampleAllowed": true,
+        "sampleLength": "first 200 words"
+      },
+      "/courses/*/lesson/*": {
+        "type": "one-time-purchase",
+        "price": 49.99
+      }
+    },
+    "robotsTxtRules": {
+      "disallow": [
+        "/dashboard",
+        "/admin",
+        "/api/*",
+        "/checkout",
+        "/account/*"
+      ],
+      "allow": [
+        "/premium/sample"
+      ],
+      "crawlDelay": 1
+    },
+    "authenticationApi": {
+      "login": "/api/auth/login",
+      "logout": "/api/auth/logout",
+      "refresh": "/api/auth/refresh",
+      "sessionValidation": "/api/auth/validate"
+    },
+    "seoForDeepWeb": {
+      "generateAuthGatedSitemap": false,
+      "useNoIndexHeaders": true,
+      "structuredDataForPaywall": {
+        "@type": "WebPage",
+        "isAccessibleForFree": false,
+        "hasPart": {
+          "@type": "CreativeWork",
+          "isAccessibleForFree": false,
+          "cssSelector": ".premium-content"
+        }
+      }
+    }
+  },
+  "searchEngineOptimization": {
+    "sitemapXml": "https://example.com/sitemap.xml",
+    "sitemapIndex": "https://example.com/sitemap_index.xml",
+    "robotsTxt": "https://example.com/robots.txt",
+    "jsonLdContext": "https://schema.org",
+    "hydrationStrategy": "server-side-rendering",
+    "prerenderRoutes": [
+      "/home",
+      "/about",
+      "/contact",
+      "/products",
+      "/blog"
+    ],
+    "dynamicRoutesPatterns": [
+      "/products/*",
+      "/blog/*",
+      "/jobs/*"
+    ],
+    "structuredDataGloballyInjected": [
+      {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Example Website",
+        "url": "https://example.com",
+        "logo": "https://example.com/logo.png",
+        "sameAs": [
+          "https://facebook.com/example",
+          "https://x.com/example"
+        ],
+        "contactPoint": {
+          "@type": "ContactPoint",
+          "email": "support@example.com",
+          "contactType": "customer service"
+        }
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "url": "https://example.com",
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://example.com/search?q={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
+      }
+    ],
+    "breadcrumbs": {
+      "enabled": true,
+      "position": "top-of-main",
+      "structuredData": true
+    },
+    "pagination": {
+      "prevNextLinks": true,
+      "relPrevNext": true
+    },
+    "canonicalUrls": {
+      "enforceWww": true,
+      "trailingSlash": "without",
+      "removeUtmParams": true
+    },
+    "hreflangTags": {
+      "enabled": true,
+      "generateAutomatically": true
+    },
+    "imageSeo": {
+      "autoAltText": true,
+      "lazyLoading": true,
+      "webpFormat": true,
+      "srcsetResponsive": true
+    },
+    "performanceSeo": {
+      "coreWebVitals": {
+        "lcpTarget": "< 2.5s",
+        "fidTarget": "< 100ms",
+        "clsTarget": "< 0.1"
+      },
+      "structuredDataInline": true,
+      "criticalCssInline": true
+    }
+  },
+  "stateManagement": {
+    "framework": "react | vue | angular | svelte",
+    "store": {
+      "user": "global (persisted)",
+      "cart": "global (persisted)",
+      "ui": "local (non-persisted)",
+      "routeParams": "dynamic",
+      "forms": "local + validation state",
+      "ads": "global + consent"
+    },
+    "dataFetchingStrategy": "client-side-with-cache",
+    "cacheStrategy": "stale-while-revalidate",
+    "persistence": {
+      "localStorage": [
+        "userPreferences",
+        "cart"
+      ],
+      "sessionStorage": [
+        "formDrafts"
+      ],
+      "cookies": [
+        "authToken",
+        "consent"
+      ]
+    },
+    "offlineSupport": {
+      "enabled": false,
+      "serviceWorker": "/sw.js",
+      "cacheFirst": [
+        "/offline.html",
+        "/static/css",
+        "/static/js"
+      ]
+    }
+  },
+  "apiEndpoints": {
+    "rest": {
+      "baseUrl": "https://api.example.com/v1",
+      "endpoints": {
+        "products": "/products",
+        "productDetail": "/products/{id}",
+        "categories": "/categories",
+        "search": "/search",
+        "user": "/user",
+        "cart": "/cart",
+        "checkout": "/checkout",
+        "auth": {
+          "login": "/auth/login",
+          "register": "/auth/register",
+          "logout": "/auth/logout",
+          "refresh": "/auth/refresh"
+        },
+        "content": {
+          "blog": "/content/blog",
+          "pages": "/content/pages",
+          "faqs": "/content/faqs"
+        },
+        "analytics": "/analytics/events"
+      }
+    },
+    "graphql": {
+      "endpoint": "https://api.example.com/graphql",
+      "introspection": false,
+      "queries": {
+        "product": "query Product($id: ID!) { product(id: $id) { id name price ... } }"
+      }
+    }
+  },
+  "analytics": {
+    "providers": [
+      {
+        "name": "Google Analytics 4",
+        "measurementId": "G-XXXXXXXX",
+        "enabled": true,
+        "consentRequired": true,
+        "customEvents": [
+          "page_view",
+          "view_item",
+          "add_to_cart",
+          "begin_checkout",
+          "purchase"
+        ]
+      },
+      {
+        "name": "Google Tag Manager",
+        "containerId": "GTM-XXXXXX",
+        "enabled": true
+      }
+    ],
+    "privacy": {
+      "anonymizeIp": true,
+      "respectDoNotTrack": true,
+      "cookieLessTracking": false
+    }
+  },
+  "security": {
+    "csp": {
+      "enabled": true,
+      "directives": {
+        "default-src": [
+          "'self'"
+        ],
+        "script-src": [
+          "'self'",
+          "'unsafe-inline'",
+          "https://www.googletagmanager.com"
+        ],
+        "style-src": [
+          "'self'",
+          "'unsafe-inline'"
+        ],
+        "img-src": [
+          "'self'",
+          "data:",
+          "https:"
+        ],
+        "connect-src": [
+          "'self'",
+          "https://api.example.com"
+        ]
+      }
+    },
+    "cors": {
+      "allowedOrigins": [
+        "https://example.com"
+      ],
+      "allowedMethods": [
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE"
+      ],
+      "allowCredentials": true
+    },
+    "headers": {
+      "xFrameOptions": "DENY",
+      "xContentTypeOptions": "nosniff",
+      "referrerPolicy": "strict-origin-when-cross-origin",
+      "permissionsPolicy": "geolocation=(), microphone=(), camera=()"
+    },
+    "inputValidation": {
+      "sanitizeHtml": true,
+      "escapeJson": true,
+      "rateLimiting": {
+        "enabled": true,
+        "maxRequestsPerMinute": 60,
+        "maxRequestsPerIpPerMinute": 120
+      }
+    }
+  },
+  "progressiveWebApp": {
+    "enabled": true,
+    "manifest": {
+      "name": "Example Website",
+      "short_name": "Example",
+      "start_url": "/home",
+      "display": "standalone",
+      "theme_color": "#ffffff",
+      "background_color": "#000000",
+      "icons": [
+        {
+          "src": "/icons/icon-192.png",
+          "sizes": "192x192",
+          "type": "image/png"
+        },
+        {
+          "src": "/icons/icon-512.png",
+          "sizes": "512x512",
+          "type": "image/png"
+        }
+      ]
+    },
+    "offlinePage": "/offline.html",
+    "pushNotifications": {
+      "enabled": true,
+      "vapidPublicKey": "BC...",
+      "subscribeEndpoint": "/api/notifications/subscribe"
+    }
+  },
+  "internationalization": {
+    "enabled": true,
+    "defaultLocale": "en-US",
+    "supportedLocales": [
+      "en-US",
+      "es-ES",
+      "fr-FR",
+      "de-DE",
+      "ja-JP"
+    ],
+    "strategy": "url-path",
+    "urlPattern": "/{locale}/path",
+    "translationFiles": "/locales/{locale}/common.json",
+    "rtlLanguages": [
+      "ar-SA",
+      "he-IL"
+    ],
+    "dateFormat": "locale-specific",
+    "currencyFormat": "locale-specific"
+  },
+  "accessibility": {
+    "wcagLevel": "AA",
+    "ariaLabels": true,
+    "keyboardNavigation": true,
+    "skipToMainContent": true,
+    "highContrastSupport": false,
+    "screenReaderOptimized": true,
+    "focusManagement": true,
+    "announceLiveRegions": true
+  },
+  "errorHandling": {
+    "404Page": "/not-found",
+    "500Page": "/error",
+    "offlinePage": "/offline",
+    "errorTracking": {
+      "sentryDsn": "https://xxx@sentry.io/xxx",
+      "environment": "production"
+    },
+    "gracefulDegradation": {
+      "javascriptDisabled": "show-noscript-message",
+      "apiUnavailable": "show-cached-data"
+    }
+  }
+}
